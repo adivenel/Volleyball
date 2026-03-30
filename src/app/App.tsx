@@ -11,7 +11,7 @@ import './styles/temp.css';
 
 type TabType = 'home' | 'news' | 'achievements' | 'team';
 
-// Ленивая загрузка компонентов - исправленный синтаксис
+// ИСПРАВЛЕННЫЕ импорты для ленивой загрузки
 const HomeContent = lazy(() => import('../pages/home/ui/HomeContent').then(module => ({ default: module.HomeContent })));
 const NewsContentPage = lazy(() => import('../pages/news/ui/NewsContent').then(module => ({ default: module.NewsContentPage })));
 const AchievementsContent = lazy(() => import('../pages/achievements/ui/AchievementsContent').then(module => ({ default: module.AchievementsContent })));
