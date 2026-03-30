@@ -1,4 +1,3 @@
-// src/shared/ui/Button/Button.tsx
 import React from 'react';
 
 export interface ButtonProps {
@@ -8,7 +7,6 @@ export interface ButtonProps {
   type?: 'button' | 'submit';
   disabled?: boolean;
   className?: string;
-  // Для совместимости со старыми stories
   primary?: boolean;
   size?: 'small' | 'medium' | 'large';
   label?: string;
@@ -21,20 +19,18 @@ export const Button: React.FC<ButtonProps> = ({
   type = 'button',
   disabled = false,
   className = '',
-  // Совместимость
   primary,
   size,
   label
 }) => {
-  // Определяем variant на основе primary
   const actualVariant = primary ? 'primary' : variant;
   
   const getButtonClass = () => {
-    const baseClasses = "px-6 py-3 rounded-lg font-semibold transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed";
+    const baseClasses = "rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center";
     
-    // Обработка size если нужно
-    const sizeClass = size === 'small' ? 'px-4 py-2 text-sm' : 
-                     size === 'large' ? 'px-8 py-4 text-lg' : '';
+    const sizeClass = size === 'small' ? 'px-3 py-1.5 text-sm' : 
+                     size === 'large' ? 'px-8 py-4 text-lg' : 
+                     'px-5 py-2 text-base';
     
     switch (actualVariant) {
       case 'success':
@@ -46,7 +42,6 @@ export const Button: React.FC<ButtonProps> = ({
     }
   };
 
-  // Используем label если передан, иначе children
   const buttonContent = label || children;
 
   return (

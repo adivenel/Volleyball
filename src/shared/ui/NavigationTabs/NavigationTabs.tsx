@@ -46,7 +46,7 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 mt-1">
       <div className="container max-w-6xl mx-auto px-5">
         <nav className="flex space-x-8">
           {tabs.map((tab) => (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header } from '@/shared/ui/Header/Header';
+import { Header } from '@/shared/ui/Header/Header'; // Убедитесь, что путь правильный
 import { Footer } from '@/shared/ui/Footer/Footer';
 import { NavigationTabs } from '@/shared/ui/NavigationTabs/NavigationTabs';
 import { useTheme } from '@/shared/lib/context/ThemeContext';
@@ -19,7 +19,6 @@ export const BaseLayout: React.FC<BaseLayoutProps> = ({
 
   return (
     <div className={`min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 ${darkMode ? 'dark' : 'light'}`}>
-      {}
       <Header />
       <NavigationTabs activeTab={activeTab} onTabChange={onTabChange} />
       <main className="flex-1">

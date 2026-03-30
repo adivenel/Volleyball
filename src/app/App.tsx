@@ -6,6 +6,7 @@ import { HomeContentSkeleton } from '../pages/home/ui/HomeContentSkeleton';
 import { NewsContentSkeleton } from '../pages/news/ui/NewsContentSkeleton';
 import { AchievementsContentSkeleton } from '../pages/achievements/ui/AchievementsContentSkeleton';
 import { TeamContentSkeleton } from '../pages/team/ui/TeamContentSkeleton';
+import { AuthProvider } from '../features/auth/model/AuthProvider';
 import './styles/temp.css';
 
 type TabType = 'home' | 'news' | 'achievements' | 'team';
@@ -123,9 +124,11 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <BaseLayout activeTab={activeTab} onTabChange={setActiveTab}>
-        {renderContent()}
-      </BaseLayout>
+      <AuthProvider>
+        <BaseLayout activeTab={activeTab} onTabChange={setActiveTab}>
+          {renderContent()}
+        </BaseLayout>
+      </AuthProvider>
     </ThemeProvider>
   );
 };
