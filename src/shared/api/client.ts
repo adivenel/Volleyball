@@ -46,6 +46,15 @@ class ApiClient {
 
     const data: ApiResponse<T> = await response.json();
 
+    // НОВАЯ ОБРАБОТКА ОШИБОК АВТОРИЗАЦИИ
+    if (response.status === 401 || response.status === 403) {
+      // Если токен недействителен или недостаточно прав - разлогиниваем
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+      window.dispatchEvent(new Event('auth-error')); // Событие для принудительного обновления UI
+      throw new Error(data.error || 'Необходима авторизация');
+    }
+
     if (!response.ok || !data.success) {
       throw new Error(data.error || data.message || 'Request failed');
     }

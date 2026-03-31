@@ -1,19 +1,17 @@
-# Зависимости
+# Создайте .gitignore
+echo "# Dependencies
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+package-lock.json
 
-# Сборка
+# Build outputs
 dist/
 build/
-
-# Кэш
-.cache/
-.webpack/
-
-# Логи
 *.log
+
+# Environment files
+.env
+.env.local
+.env.production
 
 # IDE
 .vscode/
@@ -21,10 +19,18 @@ build/
 *.swp
 *.swo
 
-# ОС
+# OS
 .DS_Store
 Thumbs.db
 
-# Environment variables
-.env
-.env.local
+# Backend
+volleyball-backend/volleyball-backend
+volleyball-backend/*.exe
+volleyball-backend/temp.go
+
+# Docker
+volleyball-backend/postgres_data/
+
+# Misc
+*.tmp
+*.temp" > .gitignore

@@ -1,10 +1,11 @@
-// src/pages/home/ui/HomeContent.tsx (обновленная версия)
+// src/pages/home/ui/HomeContent.tsx (обновленная версия с авторизацией)
 import React, { useState } from 'react';
 import { HeroSection } from '@/entities/club/ui/HeroSection/HeroSection';
 import { MatchesList } from '@/entities/match/ui/MatchesList/MatchesList';
 import { Modal } from '@/shared/ui/Modal/Modal';
 import { Button } from '@/shared/ui/Button/Button';
 import { SuccessModal } from '@/features/ticket-purchase/ui/SuccessModal';
+import { AuthModal } from '@/features/auth';
 import { useMatches, usePurchaseTicket } from '@/shared/api/hooks';
 import { Match } from '@/shared/api/types';
 
@@ -14,6 +15,7 @@ export const HomeContent: React.FC = () => {
   
   const [isTicketModalOpen, setIsTicketModalOpen] = useState<boolean>(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [ticketQuantity, setTicketQuantity] = useState<number>(1);
 
@@ -34,12 +36,26 @@ export const HomeContent: React.FC = () => {
   const handleBuyTickets = async (): Promise<void> => {
     if (!selectedMatch) return;
     
+    // Проверяем авторизацию перед покупкой
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      closeModal(); // Закрываем модалку покупки билетов
+      setIsAuthModalOpen(true); // Открываем модалку авторизации
+      return;
+    }
+    
     try {
       await purchaseTicket(selectedMatch.id, ticketQuantity);
       closeModal();
       setIsSuccessModalOpen(true);
     } catch (error) {
-      alert('Ошибка при покупке билетов. Пожалуйста, попробуйте позже.');
+      const err = error as Error;
+      if (err.message.includes('авторизоваться') || err.message.includes('Unauthorized')) {
+        closeModal();
+        setIsAuthModalOpen(true);
+      } else {
+        alert('Ошибка при покупке билетов. Пожалуйста, попробуйте позже.');
+      }
     }
   };
 
@@ -165,6 +181,13 @@ export const HomeContent: React.FC = () => {
           quantity={ticketQuantity}
         />
       )}
+
+      {/* Модальное окно авторизации */}
+      <AuthModal 
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        defaultMode="login"
+      />
     </>
   );
 };

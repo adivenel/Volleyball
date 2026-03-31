@@ -1,3 +1,4 @@
+// src/app/App.tsx
 import React, { useState, Suspense, lazy } from 'react';
 import { ThemeProvider } from '../shared/lib/context/ThemeContext';
 import { BaseLayout } from '../widgets/layout/ui/BaseLayout/BaseLayout';
@@ -6,19 +7,22 @@ import { HomeContentSkeleton } from '../pages/home/ui/HomeContentSkeleton';
 import { NewsContentSkeleton } from '../pages/news/ui/NewsContentSkeleton';
 import { AchievementsContentSkeleton } from '../pages/achievements/ui/AchievementsContentSkeleton';
 import { TeamContentSkeleton } from '../pages/team/ui/TeamContentSkeleton';
-import { AuthProvider } from '../features/auth/model/AuthProvider';
+import { AuthProvider, useRole } from '../features/auth/model/AuthProvider';
 import './styles/temp.css';
 
-type TabType = 'home' | 'news' | 'achievements' | 'team';
+type TabType = 'home' | 'news' | 'achievements' | 'team' | 'admin';
 
-// ИСПРАВЛЕННЫЕ импорты для ленивой загрузки
+// Импорты для ленивой загрузки
 const HomeContent = lazy(() => import('../pages/home/ui/HomeContent').then(module => ({ default: module.HomeContent })));
 const NewsContentPage = lazy(() => import('../pages/news/ui/NewsContent').then(module => ({ default: module.NewsContentPage })));
 const AchievementsContent = lazy(() => import('../pages/achievements/ui/AchievementsContent').then(module => ({ default: module.AchievementsContent })));
 const TeamContent = lazy(() => import('../pages/team/ui/TeamContent').then(module => ({ default: module.TeamContent })));
+const AdminPanel = lazy(() => import('../pages/admin/ui/AdminPanel').then(module => ({ default: module.AdminPanel })));
 
-const App = () => {
+const AppContent = () => {
   const [activeTab, setActiveTab] = useState<TabType>('home');
+  const role = useRole();
+  const isAdmin = role === 'admin';
 
   const renderContent = () => {
     switch (activeTab) {
@@ -97,6 +101,40 @@ const App = () => {
             </Suspense>
           </ErrorBoundary>
         );
+      case 'admin':
+        if (!isAdmin) {
+          return (
+            <div className="container max-w-6xl mx-auto px-5 py-16 text-center">
+              <h3 className="text-xl font-bold text-red-600 dark:text-red-400 mb-4">
+                Доступ запрещен
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                У вас нет прав для просмотра этой страницы.
+              </p>
+            </div>
+          );
+        }
+        return (
+          <ErrorBoundary
+            fallback={
+              <div className="container max-w-6xl mx-auto px-5 py-12 text-center">
+                <h3 className="text-xl font-bold text-red-600 dark:text-red-400 mb-4">
+                  Ошибка загрузки панели администратора
+                </h3>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-2 bg-zenit-blue text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Обновить страницу
+                </button>
+              </div>
+            }
+          >
+            <Suspense fallback={<div className="text-center py-16">Загрузка панели администратора...</div>}>
+              <AdminPanel />
+            </Suspense>
+          </ErrorBoundary>
+        );
       default:
         return (
           <ErrorBoundary
@@ -123,11 +161,17 @@ const App = () => {
   };
 
   return (
+    <BaseLayout activeTab={activeTab} onTabChange={setActiveTab} isAdmin={isAdmin}>
+      {renderContent()}
+    </BaseLayout>
+  );
+};
+
+const App = () => {
+  return (
     <ThemeProvider>
       <AuthProvider>
-        <BaseLayout activeTab={activeTab} onTabChange={setActiveTab}>
-          {renderContent()}
-        </BaseLayout>
+        <AppContent />
       </AuthProvider>
     </ThemeProvider>
   );

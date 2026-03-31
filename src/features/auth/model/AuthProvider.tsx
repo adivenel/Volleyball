@@ -1,3 +1,4 @@
+// src/features/auth/model/AuthProvider.tsx
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { apiClient } from '@/shared/api/client';
 
@@ -73,4 +74,10 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
+};
+
+// НОВЫЙ ХУК ДЛЯ ДОСТУПА К РОЛИ
+export const useRole = () => {
+  const { user } = useAuth();
+  return user?.role || 'user';
 };

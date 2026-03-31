@@ -1,15 +1,18 @@
+// src/shared/ui/NavigationTabs/NavigationTabs.tsx
 import React, { useState } from 'react';
 
-type TabType = 'home' | 'news' | 'achievements' | 'team';
+type TabType = 'home' | 'news' | 'achievements' | 'team' | 'admin';
 
 interface NavigationTabsProps {
   activeTab: TabType;
   onTabChange: (tab: TabType) => void;
+  isAdmin?: boolean; // Новый пропс
 }
 
 export const NavigationTabs: React.FC<NavigationTabsProps> = ({ 
   activeTab, 
-  onTabChange 
+  onTabChange,
+  isAdmin = false 
 }) => {
   const [hoveredTab, setHoveredTab] = useState<TabType | null>(null);
 
@@ -19,6 +22,11 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
     { key: 'achievements', label: 'Достижения' },
     { key: 'team', label: 'Команда' },
   ];
+
+  // Добавляем админ-вкладку, если пользователь админ
+  if (isAdmin) {
+    tabs.push({ key: 'admin', label: 'Админка' });
+  }
 
   const handleMouseEnter = (tab: TabType) => {
     setHoveredTab(tab);
@@ -32,6 +40,9 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
           break;
         case 'team':
           import('@/pages/team/ui/TeamContent');
+          break;
+        case 'admin':
+          import('@/pages/admin/ui/AdminPanel');
           break;
       }
     }
